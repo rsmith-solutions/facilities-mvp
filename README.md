@@ -51,6 +51,36 @@ This is not a production SaaS—yet. It is a learning project with real-world in
 
 ## Status
 
-Foundational setup complete.  
+Foundational setup complete.
+
+## Phase A – Work Orders (Complete)
+
+Phase A implements the core work order backend and workflow.
+
+**Capabilities:**
+- Create and retrieve work orders via HTTP API
+- Enforced status transitions:
+  - New → Assigned → In Progress → On Hold → Complete
+- Automatic tracking of:
+  - startedAt
+  - completedAt
+  - completedBy
+  - laborMinutes (calculated)
+- Completion notes supported
+- Serverless architecture with near-zero idle cost
+
+**Architecture:**
+- Amazon API Gateway (HTTP API)
+- AWS Lambda (Python)
+- Amazon DynamoDB (single-table design with GSI)
+- Infrastructure defined entirely with Terraform
+
+This phase intentionally excludes authentication, role-based access, inventory, and attachments, which will be added incrementally in later phases.
+
+### Testing (Development)
+Endpoints can be tested using curl or Postman once deployed.  
+Authentication is not yet enabled in Phase A.
+
+
 Currently defining the work order domain model before implementation.
 
