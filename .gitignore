@@ -1,0 +1,13 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Sensitive vars
+*.tfvars
+*.tfvars.json
+
+# OS/editor
+.DS_Store
+*.swp
