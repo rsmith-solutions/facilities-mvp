@@ -29,6 +29,12 @@ This project explores an alternative approach: **start with what facilities actu
 
 ## Current Scope
 
+- Facilities management backend MVP
+
+- Focus on secure identity, tenancy, and core work-order lifecycle
+
+- Infrastructure-first approach with minimal UI assumptions
+
 ## Current Architecture (Phase A.5)
 
 - AWS API Gateway (HTTP API)
@@ -42,15 +48,69 @@ This project explores an alternative approach: **start with what facilities actu
 - Authentication is handled by Amazon Cognito.
 - API Gateway validates Cognito-issued JWTs on protected routes.
 - Unauthorized requests are blocked at the gateway (Lambda not invoked).
-- State-changing routes are protected; read-only routes remain public during early phases.
+- State-changing routes are protected; read-only routes remain public during early phasesState-changing routes are protected; health/read-only routes may remain public during early phases..
+
+## Identity & Tenancy Model
+
+- JWTs currently do not include an org/tenant claim (custom:* or cognito:groups).
+- The JWT sub claim is treated as the authoritative user identifier.
+- Tenancy is derived from a user profile record stored in DynamoDB, keyed by sub.
+
+## User Profile Item (DynamoDB)
+
+- PK: USER#<sub>
+- SK: PROFILE
+- Attributes:
+   - orgId (currently ORG#default)
+   - role (currently manager)
+   - email
+   - createdAt
+   - updatedAt
+
+## User Bootstrap Endpoint
+
+- Endpoint: POST /me/bootstrap
+- Authentication: Required (JWT)
+- Purpose: One-time creation of the user profile record
+- Behavior:
+   - Creates the user profile if it does not exist
+   - Idempotent (safe to call multiple times)
+   - Does not overwrite existing data
+
+- This endpoint must be called once per authenticated user before accessing org-scoped resources.
 
 ### Verified Behavior
-
+  
 - PATCH /work-orders/{id}/status
-  - Returns 401 when no JWT is provided
-  - Accepts requests with a valid Cognito JWT
+   - Returns 401 when no JWT is provided
+   - Accepts requests with a valid Cognito JWT
+- POST /me/bootstrap
+   - Requires JWT
+   - Successfully creates a USER#<sub> profile record
+- Lambda recieves validated JWT claims via:
+	event.requestContext.authorizer.jwt.claims
+
+## Work Orders (Current State)
+
+- Work orders are currently written using a temporary tenant pattern.
+- This will be refactored in the next phase to fully enforce org-based isolation.
+
+# Planned changes:
+
+- Remove tenantId from request body/query
+- Derive orgId from the user profile
+- Update DynamoDB keys from TENANT#... to ORG#...
+- Enforce org scoping on all reads and writes 
 
 **Phase A (in progress):**
+
+- Core work-order domain logic
+- Secure identity foundation complete
+- User-to-org derivation implemented
+- Next focus: org-scoped work-order creation and retrieval
+
+ * Current Phase A scope and foundations *
+
 - Work order model design
 - AWS + Terraform foundation
 - Minimal backend infrastructure
