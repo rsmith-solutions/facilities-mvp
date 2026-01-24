@@ -29,6 +29,27 @@ This project explores an alternative approach: **start with what facilities actu
 
 ## Current Scope
 
+## Current Architecture (Phase A.5)
+
+- AWS API Gateway (HTTP API)
+- AWS Lambda (AWS_PROXY, payload format v2.0)
+- DynamoDB (single-table design)
+- Amazon Cognito User Pool
+- JWT authentication enforced at API Gateway
+
+## Authentication & Authorization
+
+- Authentication is handled by Amazon Cognito.
+- API Gateway validates Cognito-issued JWTs on protected routes.
+- Unauthorized requests are blocked at the gateway (Lambda not invoked).
+- State-changing routes are protected; read-only routes remain public during early phases.
+
+### Verified Behavior
+
+- PATCH /work-orders/{id}/status
+  - Returns 401 when no JWT is provided
+  - Accepts requests with a valid Cognito JWT
+
 **Phase A (in progress):**
 - Work order model design
 - AWS + Terraform foundation
