@@ -109,7 +109,7 @@ This project explores an alternative approach: **start with what facilities actu
 - User-to-org derivation implemented
 - Next focus: org-scoped work-order creation and retrieval
 
- * Current Phase A scope and foundations *
+**Current Phase A scope and foundations**
 
 - Work order model design
 - AWS + Terraform foundation
