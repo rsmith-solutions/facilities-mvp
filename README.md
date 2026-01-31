@@ -69,7 +69,7 @@ This project prioritizes architectural clarity over rapid feature expansion.
 - Authentication is handled by Amazon Cognito.
 - API Gateway validates Cognito-issued JWTs on protected routes.
 - Unauthorized requests are blocked at the gateway (Lambda not invoked).
-- State-changing routes are protected;
+- State-changing routes are protected.
 - Health and select read-only routes may remain public during early phases
 
 ## Identity & Tenancy Model
@@ -160,9 +160,9 @@ Phase A.5 layers secure identity and tenant isolation onto the existing work ord
  
 ## Phase A.5 Planned changes
 
-- Remove 'tenantId' from request body and query parameters
-- Derive 'orgId' from user profile records
-- Update DynamoDB keys from 'TENANT#' ... to 'ORG#' ...
+- Remove `tenantId` from request body and query parameters
+- Derive `orgId` from user profile records
+- Update DynamoDB keys from `TENANT#` ... to `ORG#` ...
 - Enforce org scoping on all reads and writes 
 
 Future phases will be added only after the core workflow is stable and useful.
@@ -193,5 +193,5 @@ It is a learning project with real-world intent and architectural discipline.
 - Frontend or UI Implementation
 
 ### Testing (Development)
-Endpoints can be tested using curl or Postman once deployed.  
+Endpoints can be tested using curl or Postman once deployed and authenticated.  
 
