@@ -44,6 +44,18 @@ This project explores an alternative approach: **start with what facilities actu
 
 ---
 
+## Scope Discipline
+
+Features are introduced only after the previous layer is:
+- Correct
+- Secure
+- Observable
+- Documented
+
+This project prioritizes architectural clarity over rapid feature expansion.
+
+---
+
 ## Current Architecture (Phase A.5)
 
 - AWS API Gateway (HTTP API)
@@ -58,14 +70,14 @@ This project explores an alternative approach: **start with what facilities actu
 - API Gateway validates Cognito-issued JWTs on protected routes.
 - Unauthorized requests are blocked at the gateway (Lambda not invoked).
 - State-changing routes are protected;
-- Health and read-only routes remain public during early phases
+- Health and select read-only routes may remain public during early phases
 
 ## Identity & Tenancy Model
 
 - JWTs do not include an org/tenant claim.
 - The JWT sub claim is treated as the authoritative user identifier.
 - Tenancy is derived from a user profile record stored in DynamoDB, keyed by sub.
-- Clients nexver submit orgId or tenant identifiers
+- Clients never submit orgId or tenant identifiers
 
 ## User Profile Item (DynamoDB)
 
@@ -98,7 +110,7 @@ This project explores an alternative approach: **start with what facilities actu
 - POST /me/bootstrap
    - Requires a valid Cognito JWT
    - Successfully creates a USER#<sub> profile record
-- Lambda recieves validated JWT claims via:
+- Lambda receives validated JWT claims via:
 	event.requestContext.authorizer.jwt.claims
 
 ## Work Orders (Current State)
@@ -145,26 +157,13 @@ Phase A.5 layers secure identity and tenant isolation onto the existing work ord
 - `orgId` is not accepted from request payloads
 - Tenant isolation is enforced in Lambda logic
 - API Gateway blocks unauthorized requests before execution
-- 
-# Phase A.5 Planned changes:
+ 
+## Phase A.5 Planned changes
 
 - Remove 'tenantId' from request body and query parameters
 - Derive 'orgId' from user profile records
 - Update DynamoDB keys from 'TENANT#' ... to 'ORG#' ...
 - Enforce org scoping on all reads and writes 
-
-**Phase A (in progress):**
-
-- Core work-order domain logic
-- Secure identity foundation complete
-- User-to-org derivation implemented
-- Next focus: org-scoped work-order creation and retrieval
-
-**Current Phase A scope and foundations**
-
-- Work order model design
-- AWS + Terraform foundation
-- Minimal backend infrastructure
 
 Future phases will be added only after the core workflow is stable and useful.
 
@@ -178,7 +177,7 @@ Future phases will be added only after the core workflow is stable and useful.
 - No always-on compute
 
 This is not a production SaaS—yet. 
-It is a learning project with real-world intent and architectual disciipline.
+It is a learning project with real-world intent and architectural discipline.
 
 ---
 
@@ -195,8 +194,4 @@ It is a learning project with real-world intent and architectual disciipline.
 
 ### Testing (Development)
 Endpoints can be tested using curl or Postman once deployed.  
-Authentication is not yet enabled in Phase A.
-
-
-Currently defining the work order domain model before implementation.
 
